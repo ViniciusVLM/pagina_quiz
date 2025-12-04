@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz: HIV & AIDS</title>
+
+  <style>
+    :root{
+      --page-bg:#F7948D;   /* Fundo total */
+      --container-bg:#F54D41; /* Fundo externo tipo “card enorme” */
+      --card-bg:#ffffff;   /* Card branco interno */
+      --accent:#C23E34;    /* Botões e destaques */
+      --muted:#8a4a46;     /* Textos secundários */
+      --correct:#10b981;
+      --wrong:#ef4444;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      font-family:Inter,Arial,sans-serif;
+      background:var(--page-bg);
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      color:#5a1f1a;
+    }
+
+    .container{
+      width:100%;
+      max-width:900px;
+      background:var(--container-bg);
+      padding:26px;
+      border-radius:22px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.20);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+      color:#fff;
+    }
+
+    h1{
+      margin:0;
+      font-size:20px;
+      font-weight:700;
+    }
+
+    p.lead{
+      margin:2px 0 0;
+      font-size:14px;
+      color:#ffe7e7;
+    }
+
+    .card{
+      background:var(--card-bg);
+      padding:22px;
+      border-radius:14px;
+      margin-top:14px;
+      color:var(--accent);
+      box-shadow:0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .question{
+      font-size:18px;
+      margin-bottom:12px;
+      text-align:center;
+      font-weight:600;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+
+    .option{
+      background:#fff;
+      border:1px solid #f3b0ab;
+      padding:12px;
+      border-radius:8px;
+      cursor:pointer;
+      transition:0.15s;
+      text-align:left;
+      color:#8a4a46;
+      font-weight:600;
+    }
+
+    .option:hover{
+      transform:translateY(-3px);
+      box-shadow:0 6px 18px rgba(0,0,0,0.18);
+    }
+
+    .option.correct{
+      border-color:var(--correct);
+      background:#e4f7ef;
+    }
+
+    .option.wrong{
+      border-color:var(--wrong);
+      background:#fdecec;
+    }
+
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    button{
+      background-color:var(--accent);
+      color:#fff;
+      padding:10px 20px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      transition:.15s;
+    }
+
+    button:disabled{
+      opacity:.4;
+      cursor:not-allowed;
+    }
+
+    button:hover:not(:disabled){
+      opacity:.8;
+    }
+
+    button.secondary{
+      background:white;
+      color:var(--accent);
+      border:2px solid var(--accent);
+    }
+
+    .explanation{
+      margin-top:10px;
+      padding:10px;
+      border-radius:8px;
+      background:#fff4f4;
+      color:#8a4a46;
+      font-size:14px;
+      border:1px solid #f2b2aa;
+    }
+
+    footer{
+      margin-top:16px;
+      font-size:13px;
+      color:#ffe3e3;
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <div>
+        <h1>Quiz Interativo: HIV & AIDS</h1>
+        <p class="lead">Aprenda e descubra mitos e verdades de forma segura.</p>
+      </div>
+
+      <div style="text-align:right">
+        <div style="font-weight:700;color:#fff" id="score">Pontuação: 0</div>
+        <div style="font-size:12px;color:#ffe7e7">Pergunta <span id="qIndex">0</span>/10</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="question" id="question">Carregando perguntas...</div>
+      <div class="options" id="options"></div>
+
+      <div class="meta">
+        <div id="feedback" style="min-height:18px"></div>
+        <div style="display:flex;gap:8px">
+          <button id="nextBtn" class="secondary" disabled>Próxima</button>
+          <button id="restartBtn">Reiniciar</button>
+        </div>
+      </div>
+
+      <div class="explanation" id="explanation" hidden></div>
+    </section>
+
+    <footer>
+      Informações educativas — Em caso de dúvidas, procure um centro de saúde.
+    </footer>
+  </main>
+
+  <script>
+    const quiz = [
+      { q: 'O HIV pode ser transmitido pelo beijo?', options:['Sim','Não'], answer:1, explain:'O HIV não é transmitido por beijo, saliva ou contato casual.'},
+      { q: 'O HIV é um vírus que afeta qual sistema?', options:['Imunológico','Respiratório','Digestivo','Ósseo'], answer:0, explain:'O HIV ataca células do sistema imunológico, especialmente CD4.'},
+      { q: 'A AIDS é:', options:['O vírus HIV','A fase avançada da infecção pelo HIV','Uma gripe forte','Uma DST que cura sozinha'], answer:1, explain:'A AIDS é o estágio avançado da infecção pelo HIV sem tratamento.'},
+      { q: 'Qual método reduz o risco de transmissão sexual?', options:['Preservativo','Segurar a respiração','Beber água','Dormir bem'], answer:0, explain:'Preservativo é um dos métodos mais eficazes de prevenção.'},
+      { q: 'PrEP serve para:', options:['Curar HIV','Prevenir HIV antes da exposição','Detectar HIV','Aumentar imunidade'], answer:1, explain:'PrEP reduz drasticamente o risco de contrair HIV.'},
+      { q: 'PEP deve ser iniciada em até:', options:['24h','48h','72h','1 semana'], answer:2, explain:'PEP deve começar idealmente nas primeiras 72h após exposição.'},
+      { q: 'Mosquito transmite HIV?', options:['Sim','Não'], answer:1, explain:'Mosquitos não transmitem HIV.'},
+      { q: 'Uma pessoa indetectável transmite HIV?', options:['Sim','Não'], answer:1, explain:'U=U: indetectável = intransmissível em contextos sexuais.'},
+      { q: 'Compartilhar seringas transmite HIV?', options:['Sim','Não'], answer:0, explain:'Compartilhar seringas é uma forma de alto risco.'},
+      { q: 'Existe cura completa para HIV?', options:['Sim','Não'], answer:1, explain:'Ainda não há cura, mas o tratamento permite vida normal.'}
+    ];
+
+    let index=0, score=0;
+    const total=quiz.length;
+
+    const qEl=document.getElementById('question');
+    const optEl=document.getElementById('options');
+    const scoreEl=document.getElementById('score');
+    const qIndexEl=document.getElementById('qIndex');
+    const nextBtn=document.getElementById('nextBtn');
+    const restartBtn=document.getElementById('restartBtn');
+    const feed=document.getElementById('feedback');
+    const exp=document.getElementById('explanation');
+
+    function renderQuestion(){
+      const item=quiz[index];
+      qIndexEl.textContent=index+1;
+      qEl.textContent=item.q;
+      optEl.innerHTML='';
+      exp.hidden=true;
+      feed.textContent='';
+      nextBtn.disabled=true;
+
+      item.options.forEach((o,i)=>{
+        const b=document.createElement('button');
+        b.className='option';
+        b.textContent=o;
+        b.onclick=()=>select(i,b);
+        optEl.appendChild(b);
+      });
+    }
+
+    function select(choice,btn){
+      const item=quiz[index];
+
+      [...optEl.children].forEach(b=>b.disabled=true);
+
+      if(choice===item.answer){
+        btn.classList.add('correct');
+        feed.textContent="Correto!";
+        score++;
+      } else {
+        btn.classList.add('wrong');
+        feed.textContent="Incorreto!";
+        optEl.children[item.answer].classList.add('correct');
+      }
+
+      scoreEl.textContent=`Pontuação: ${score}`;
+      exp.textContent=item.explain;
+      exp.hidden=false;
+      nextBtn.disabled=false;
+    }
+
+    nextBtn.onclick=()=>{
+      index++;
+      if(index>=total) end();
+      else renderQuestion();
+    };
+
+    restartBtn.onclick=()=>{
+      index=0; score=0;
+      scoreEl.textContent='Pontuação: 0';
+      renderQuestion();
+    };
+
+    function end(){
+      qEl.textContent='Fim do Quiz';
+      optEl.innerHTML=`<div style="font-weight:600;text-align:center">Você acertou ${score} de ${total} perguntas.</div>`;
+      feed.textContent='';
+      exp.hidden=false;
+      exp.textContent='Obrigado por participar! Procure serviços de saúde para mais informações.';
+      nextBtn.disabled=true;
+    }
+
+    renderQuestion();
+  </script>
+
+</body>
+</html>
